@@ -1,13 +1,17 @@
 package com.food.ordering.system.order.service.domain.entity;
 
-import com.food.ordering.system.order.service.domain.AggregateRoot;
-import com.food.ordering.system.order.service.domain.valueObjects.Money;
-import com.food.ordering.system.order.service.domain.valueObjects.ProductId;
+import com.food.ordering.system.domain.entity.AggregateRoot;
+import com.food.ordering.system.domain.value.Money;
+import com.food.ordering.system.domain.value.ProductId;
 
 public class Product extends AggregateRoot<ProductId> {
 
     private String name;
     private Money price;
+
+    public Product(ProductId id) {
+        this.id = id;
+    }
 
     private Product(Builder builder) {
         id = builder.id;

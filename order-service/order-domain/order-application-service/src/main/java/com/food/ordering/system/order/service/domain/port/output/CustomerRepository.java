@@ -1,8 +1,12 @@
 package com.food.ordering.system.order.service.domain.port.output;
 
-import java.util.UUID;
+import com.food.ordering.system.domain.value.CustomerId;
+import com.food.ordering.system.order.service.domain.entity.Order;
+import com.food.ordering.system.order.service.domain.value.TrackingId;
+
+import java.util.Optional;
 
 public interface CustomerRepository {
 
-    Boolean existById(UUID customerId);
+    boolean existsById(CustomerId customerId);
 }

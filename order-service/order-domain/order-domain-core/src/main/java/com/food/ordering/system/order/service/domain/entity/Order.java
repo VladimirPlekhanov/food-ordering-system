@@ -1,10 +1,16 @@
 package com.food.ordering.system.order.service.domain.entity;
 
-import com.food.ordering.system.order.service.domain.*;
+import com.food.ordering.system.domain.entity.AggregateRoot;
+import com.food.ordering.system.domain.value.*;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
-import com.food.ordering.system.order.service.domain.valueObjects.*;
+import com.food.ordering.system.order.service.domain.value.OrderItemId;
+import com.food.ordering.system.order.service.domain.value.StreetAddress;
+import com.food.ordering.system.order.service.domain.value.TrackingId;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,52 +36,8 @@ public class Order extends AggregateRoot<OrderId> {
         failureMessages = builder.failureMessage;
     }
 
-    void validateOrder() throws OrderDomainException {
-        validateInitialState();
-        validateTotalPrice();
-        validateItemsPrice();
-    }
-
-    void pay() {
-        if (status == OrderStatus.PENDING) {
-            status = OrderStatus.PAID;
-        } else {
-            throw new OrderDomainException("Status should be 'PENDING', but it is " + status);
-        }
-    }
-
-    void approve() {
-        if (status == OrderStatus.PAID) {
-            status = OrderStatus.APPROVED;
-        } else {
-            throw new OrderDomainException("Status should be 'PAID', but it is " + status);
-        }
-    }
-
-    void initCancel(List<String> failureMessages) {
-        if (status == OrderStatus.PAID) {
-            status = OrderStatus.CANCELLING;
-            updateFailureMessage(failureMessages);
-        } else {
-            throw new OrderDomainException("Status should be 'PAID', but it is " + status);
-        }
-    }
-
-    void cancel(List<String> failureMessages) {
-        if (status == OrderStatus.CANCELLING || status == OrderStatus.PENDING) {
-            status = OrderStatus.CANCELLED;
-            updateFailureMessage(failureMessages);
-        } else {
-            throw new OrderDomainException("Status should be 'CANCELLING' or 'PENDING', but it is " + status);
-        }
-    }
-
-    void updateFailureMessage(List<String> failureMessages) {
-        if (failureMessages.isEmpty()) {
-            this.failureMessages = List.of();
-        } else {
-            this.failureMessages.addAll(failureMessages);
-        }
+    public static Builder builder() {
+        return new Builder();
     }
 
     public void updateProductsNameAndPrice(List<Product> products) {
@@ -88,32 +50,82 @@ public class Order extends AggregateRoot<OrderId> {
         });
     }
 
+    public void validateOrder() throws OrderDomainException {
+        validateInitialState();
+        validateTotalPrice();
+        validateItemsPrice();
+    }
+
+    public void initialize() {
+        id = new OrderId(UUID.randomUUID());
+        trackingId = new TrackingId(UUID.randomUUID());
+        status = OrderStatus.PENDING;
+        initializeOrderItems(id);
+    }
+
+    public void pay() {
+        if (status == OrderStatus.PENDING) {
+            status = OrderStatus.PAID;
+        } else {
+            throw new OrderDomainException("Status should be 'PENDING', but it is " + status);
+        }
+    }
+
+    public void approve() {
+        if (status == OrderStatus.PAID) {
+            status = OrderStatus.APPROVED;
+        } else {
+            throw new OrderDomainException("Status should be 'PAID', but it is " + status);
+        }
+    }
+
+    public void initCancel(List<String> failureMessages) {
+        if (status == OrderStatus.PAID) {
+            status = OrderStatus.CANCELLING;
+            updateFailureMessage(failureMessages);
+        } else {
+            throw new OrderDomainException("Status should be 'PAID', but it is " + status);
+        }
+    }
+
+    public void cancel(List<String> failureMessages) {
+        if (status == OrderStatus.CANCELLING || status == OrderStatus.PENDING) {
+            status = OrderStatus.CANCELLED;
+            updateFailureMessage(failureMessages);
+        } else {
+            throw new OrderDomainException("Status should be 'CANCELLING' or 'PENDING', but it is " + status);
+        }
+    }
+
+    private void updateFailureMessage(List<String> failureMessages) {
+        if (failureMessages.isEmpty()) {
+            this.failureMessages = List.of();
+        } else {
+            this.failureMessages.addAll(failureMessages);
+        }
+    }
+
     private void validateInitialState() {
         if (id != null || status != null) {
             throw new OrderDomainException("Initial order should has id and status with null value");
         }
     }
+
     private void validateTotalPrice() {
         if (totalPrice == null || !totalPrice.greaterThanZero()) {
             throw new OrderDomainException("Initial order should has totalPrice with null value and should be greater than zero");
         }
     }
+
     private void validateItemsPrice() {
         var itemsTotal = items.stream()
-             .map(item -> {
-                 validateItemPrice(item);
-                 return item.getSubTotal();
-             }).reduce(Money.ZERO, Money::add);
+                .map(item -> {
+                    validateItemPrice(item);
+                    return item.getSubTotal();
+                }).reduce(Money.ZERO, Money::add);
         if (!itemsTotal.equals(totalPrice)) {
             throw new OrderDomainException("Total price should be valid");
         }
-    }
-
-    void initialize() {
-        id = new OrderId(UUID.randomUUID());
-        trackingId = new TrackingId(UUID.randomUUID());
-        status = OrderStatus.PENDING;
-        initializeOrderItems(id);
     }
 
     private void initializeOrderItems(OrderId orderId) {
@@ -142,19 +154,23 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     public List<OrderItem> getItems() {
-        return Collections.unmodifiableList(items);
+        return items;
     }
 
     public CustomerId getCustomerId() {
         return customerId;
     }
 
-    public List<String> getFailureMessages() {
-        return failureMessages;
-    }
-
     public TrackingId getTrackingId() {
         return trackingId;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public List<String> getFailureMessages() {
+        return failureMessages;
     }
 
     public static final class Builder {
@@ -169,10 +185,6 @@ public class Order extends AggregateRoot<OrderId> {
         private List<String> failureMessage;
 
         private Builder() {
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder id(OrderId val) {

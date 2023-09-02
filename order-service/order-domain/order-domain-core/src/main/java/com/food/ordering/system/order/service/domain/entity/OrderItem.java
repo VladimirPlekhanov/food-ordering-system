@@ -1,9 +1,9 @@
 package com.food.ordering.system.order.service.domain.entity;
 
-import com.food.ordering.system.order.service.domain.Entity;
-import com.food.ordering.system.order.service.domain.valueObjects.Money;
-import com.food.ordering.system.order.service.domain.valueObjects.OrderId;
-import com.food.ordering.system.order.service.domain.valueObjects.OrderItemId;
+import com.food.ordering.system.domain.entity.Entity;
+import com.food.ordering.system.domain.value.Money;
+import com.food.ordering.system.domain.value.OrderId;
+import com.food.ordering.system.order.service.domain.value.OrderItemId;
 
 public class OrderItem extends Entity<OrderItemId> {
 
@@ -20,6 +20,10 @@ public class OrderItem extends Entity<OrderItemId> {
         price = builder.price;
         quantity = builder.quantity;
         subTotal = builder.subTotal;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     void initialize(OrderId orderId, OrderItemId orderItemId) {
@@ -60,10 +64,6 @@ public class OrderItem extends Entity<OrderItemId> {
         private Money subTotal;
 
         private Builder() {
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder id(OrderItemId val) {
