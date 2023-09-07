@@ -1,4 +1,4 @@
-package com.food.ordering.system.order.service.data;
+package com.food.ordering.system.order.service.data.order.adapter;
 
 import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.port.output.OrderRepository;
@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Component
 public class OrderRepositoryImpl implements OrderRepository {
+
     @Override
     public Order save(Order order) {
         return order;
