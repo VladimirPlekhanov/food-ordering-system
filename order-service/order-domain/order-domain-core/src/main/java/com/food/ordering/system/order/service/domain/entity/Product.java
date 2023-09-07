@@ -19,6 +19,10 @@ public class Product extends AggregateRoot<ProductId> {
         price = builder.price;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     void updateWithConfirmedNameAndPrice(String name, Money price) {
         this.name = name;
         this.price = price;
@@ -38,10 +42,6 @@ public class Product extends AggregateRoot<ProductId> {
         private Money price;
 
         private Builder() {
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder id(ProductId val) {
