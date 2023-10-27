@@ -9,11 +9,17 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>order-domain</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>order-application-service</module>
-        <module>order-domain-core</module>
-    </modules>
+    <artifactId>order-api</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
+            <artifactId>common-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
+            <artifactId>order-application-service</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
