@@ -6,7 +6,7 @@ import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderCommand;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderResponse;
-import com.food.ordering.system.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.service.domain.mapper.OrderDomainMapper;
 import com.food.ordering.system.service.domain.port.output.CustomerRepository;
 import com.food.ordering.system.service.domain.port.output.OrderRepository;
 import com.food.ordering.system.service.domain.port.output.RestaurantRepository;
@@ -22,19 +22,19 @@ public class CreateOrderCommandHandler {
 
     private final OrderRepository orderRepository;
     private final OrderDomainService orderDomainService;
-    private final OrderDataMapper orderDataMapper;
+    private final OrderDomainMapper orderDomainMapper;
     private final RestaurantRepository restaurantRepository;
     private final CustomerRepository customerRepository;
 
     @Transactional
     public CreateOrderResponse handle(CreateOrderCommand command) {
         checkCustomer(new CustomerId(command.getCustomerId()));
-        final var restaurant = checkRestaurant(orderDataMapper.toRestaurant(command));
-        var order = orderDataMapper.toOrder(command);
+        final var restaurant = checkRestaurant(orderDomainMapper.toRestaurant(command));
+        var order = orderDomainMapper.toOrder(command);
         orderDomainService.validateAndInitiateOrder(order, restaurant);
         orderRepository.save(order);
         log.info("Created order with id: {}", order.getId());
-        return orderDataMapper.toCreateOrderResponse(order);
+        return orderDomainMapper.toCreateOrderResponse(order);
     }
 
     void checkCustomer(CustomerId customerId) {
