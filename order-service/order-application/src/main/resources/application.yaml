@@ -1,0 +1,21 @@
+server:
+  port: 8181
+spring:
+  datasource:
+    url: jdbc:postgresql://0.0.0.0:5432/postgres?stringtype=unspecified
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: ordering
+logging:
+  level:
+    root: ERROR
+    com.food.ordering.system: ${LOGGING_LEVEL:DEBUG}
