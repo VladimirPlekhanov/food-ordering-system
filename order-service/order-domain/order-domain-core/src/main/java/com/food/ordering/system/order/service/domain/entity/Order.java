@@ -7,9 +7,7 @@ import com.food.ordering.system.order.service.domain.value.OrderItemId;
 import com.food.ordering.system.order.service.domain.value.StreetAddress;
 import com.food.ordering.system.order.service.domain.value.TrackingId;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -154,7 +152,7 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     public List<OrderItem> getItems() {
-        return items;
+        return List.copyOf(items);
     }
 
     public CustomerId getCustomerId() {
@@ -208,7 +206,7 @@ public class Order extends AggregateRoot<OrderId> {
         }
 
         public Builder items(List<OrderItem> val) {
-            items = val;
+            items = Objects.nonNull(val) ? List.copyOf(val) : Collections.emptyList();
             return this;
         }
 
