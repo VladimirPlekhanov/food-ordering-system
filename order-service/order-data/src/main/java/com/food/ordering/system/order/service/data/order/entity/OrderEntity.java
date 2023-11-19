@@ -22,7 +22,7 @@ public class OrderEntity {
     private UUID restaurantId;
     private String street;
     private String city;
-    private BigDecimal totalPrice;
+    private BigDecimal price;
     private UUID customerId;
     private UUID trackingId;
     @Enumerated(EnumType.STRING)

@@ -13,6 +13,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class RestaurantEntityId implements Serializable {
 
-    private UUID RestaurantId;
-    private UUID ProductId;
+    private UUID restaurantId;
+    private UUID productId;
 }

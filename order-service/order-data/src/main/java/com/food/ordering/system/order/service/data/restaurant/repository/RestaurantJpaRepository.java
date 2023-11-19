@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface RestaurantJpaRepository extends JpaRepository<RestaurantEntity, RestaurantEntityId> {
 
-    List<RestaurantEntity> findByRestaurantIdAndProductIdsIn(UUID restaurantId, List<UUID> productIds);
+    List<RestaurantEntity> findByRestaurantIdAndProductIdIn(UUID restaurantId, List<UUID> productIds);
 }

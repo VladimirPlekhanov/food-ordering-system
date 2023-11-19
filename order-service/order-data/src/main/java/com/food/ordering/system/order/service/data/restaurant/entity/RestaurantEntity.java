@@ -1,16 +1,16 @@
 package com.food.ordering.system.order.service.data.restaurant.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "restaurants", schema = "restaurant")
+@Table(name = "restaurants_products_m_view", schema = "restaurant")
 @IdClass(RestaurantEntityId.class)
 @Getter
 @Setter
@@ -23,7 +23,7 @@ public class RestaurantEntity {
     private UUID restaurantId;
     @Id
     private UUID productId;
-    private Boolean restaurantAvailable;
+    private Boolean restaurantActive;
     private String productName;
     private BigDecimal productPrice;
 }

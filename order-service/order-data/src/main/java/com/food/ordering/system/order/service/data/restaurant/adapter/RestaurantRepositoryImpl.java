@@ -20,7 +20,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     public Optional<Restaurant> find(Restaurant restaurant) {
-        List<RestaurantEntity> entities = restaurantJpaRepository.findByRestaurantIdAndProductIdsIn(
+        List<RestaurantEntity> entities = restaurantJpaRepository.findByRestaurantIdAndProductIdIn(
                 restaurant.getId().getValue(),
                 restaurantDataMapper.toProductIds(restaurant));
         return entities.isEmpty() ? Optional.empty() : Optional.of(restaurantDataMapper.toRestaurant(entities));
