@@ -1,5 +1,6 @@
 package com.food.ordering.system.order.service.data.restaurant.mapper;
 
+import com.food.ordering.system.domain.value.Money;
 import com.food.ordering.system.domain.value.ProductId;
 import com.food.ordering.system.domain.value.RestaurantId;
 import com.food.ordering.system.order.service.data.restaurant.entity.RestaurantEntity;
@@ -17,16 +18,21 @@ public class RestaurantDataMapper {
 
     public List<UUID> toProductIds(Restaurant restaurant) {
         return Optional.ofNullable(restaurant.getProducts()).stream()
-                       .flatMap(List::stream)
-                       .filter(Objects::nonNull)
-                       .map(product -> product.getId().getValue())
-                       .toList();
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .map(product -> product.getId().getValue())
+                .toList();
     }
 
     public Restaurant toRestaurant(List<RestaurantEntity> entities) {
         var id = entities.stream().findFirst().map(entity -> new RestaurantId(entity.getRestaurantId())).orElseThrow();
         var available = entities.stream().findFirst().map(RestaurantEntity::getRestaurantActive).orElseThrow();
-        var products = entities.stream().map(entity -> new Product(new ProductId(entity.getProductId()))).toList();
+        var products = entities.stream().map(entity -> Product.builder()
+                        .id(new ProductId(entity.getProductId()))
+                        .name(entity.getProductName())
+                        .price(new Money(entity.getProductPrice()))
+                        .build())
+                .toList();
         return Restaurant.builder()
                 .id(id)
                 .available(available)

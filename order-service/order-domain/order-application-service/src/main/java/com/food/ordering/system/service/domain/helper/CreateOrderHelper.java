@@ -6,7 +6,7 @@ import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
-import com.food.ordering.system.service.domain.dto.create.CreateOrderCommand;
+import com.food.ordering.system.service.domain.dto.create.CreateOrderDto;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.service.domain.mapper.OrderDomainMapper;
 import com.food.ordering.system.service.domain.port.output.CustomerRepository;
@@ -27,23 +27,25 @@ public class CreateOrderHelper {
     private final RestaurantRepository restaurantRepository;
     private final CustomerRepository customerRepository;
 
-    public OrderCreatedEvent persistOrder(CreateOrderCommand command) {
-        checkCustomer(new CustomerId(command.getCustomerId()));
-        final var restaurant = checkRestaurant(orderDomainMapper.toRestaurant(command));
-        final var order = orderDomainMapper.toOrder(command);
+    //TODO Refactor, should be 3 methods:
+    // 1 for validation, 2 for mapping, 3 for saving
+    public OrderCreatedEvent saveOrder(CreateOrderDto dto) {
+        checkCustomerExist(new CustomerId(dto.getCustomerId()));
+        final var restaurant = findRestaurant(orderDomainMapper.toRestaurant(dto));
+        final var order = orderDomainMapper.toOrder(dto);
         final var event = orderDomainService.validateAndInitiateOrder(order, restaurant);
         orderRepository.save(order);
         return event;
     }
 
-    private void checkCustomer(CustomerId customerId) {
+    private void checkCustomerExist(CustomerId customerId) {
         if (!customerRepository.existById(customerId)) {
             log.warn("Could not find customer with id: {}", customerId);
             throw new OrderDomainException("customer not found");
         }
     }
 
-    private Restaurant checkRestaurant(Restaurant restaurant) {
+    private Restaurant findRestaurant(Restaurant restaurant) {
         return restaurantRepository.find(restaurant).orElseThrow(() -> {
             log.warn("Could not find restaurant with id: {}", restaurant.getId());
             return new OrderDomainException("restaurant not found");

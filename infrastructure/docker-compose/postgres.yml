@@ -13,6 +13,14 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql/data
+#     for Docker
+#     - ./volumes/postgres:/var/lib/postgresql/data
+#     - ./init-db:/docker-entrypoint-initdb.d
+
+#     for Podman
+      - postgres_volume:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d
     restart: always
+
+volumes:
+  postgres_volume:

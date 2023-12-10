@@ -1,6 +1,6 @@
 package com.food.ordering.system.service.domain.port.input.impl;
 
-import com.food.ordering.system.service.domain.dto.create.CreateOrderCommand;
+import com.food.ordering.system.service.domain.dto.create.CreateOrderDto;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderQuery;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderResponse;
@@ -22,7 +22,7 @@ public class OrderApplicationServiceImpl implements OrderApplicationService {
     private final TrackOrderQueryHandler trackOrderQueryHandler;
 
     @Override
-    public CreateOrderResponse createOrder(CreateOrderCommand command) {
+    public CreateOrderResponse createOrder(CreateOrderDto command) {
         log.debug("Processing command: {}", command);
         return createOrderCommandHandler.handle(command);
     }

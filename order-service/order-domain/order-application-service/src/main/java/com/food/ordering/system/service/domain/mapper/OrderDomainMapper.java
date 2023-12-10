@@ -9,7 +9,8 @@ import com.food.ordering.system.order.service.domain.entity.OrderItem;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.value.StreetAddress;
-import com.food.ordering.system.service.domain.dto.create.CreateOrderCommand;
+import com.food.ordering.system.service.domain.dto.OrderItemDto;
+import com.food.ordering.system.service.domain.dto.create.CreateOrderDto;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderResponse;
 import jakarta.validation.constraints.NotNull;
@@ -20,13 +21,13 @@ import java.util.List;
 @Component
 public class OrderDomainMapper {
 
-    public Order toOrder(CreateOrderCommand command) {
+    public Order toOrder(CreateOrderDto dto) {
         return Order.builder()
-                    .customerId(new CustomerId(command.getCustomerId()))
-                    .restaurantId(new RestaurantId(command.getRestaurantId()))
-                    .deliveryAddress(new StreetAddress(command.getAddress().getStreet(), command.getAddress().getCity()))
-                    .items(toOrderItems(command.getItems()))
-                    .totalPrice(new Money(command.getPrice()))
+                    .customerId(new CustomerId(dto.getCustomerId()))
+                    .restaurantId(new RestaurantId(dto.getRestaurantId()))
+                    .deliveryAddress(new StreetAddress(dto.getAddress().getStreet(), dto.getAddress().getCity()))
+                    .items(toOrderItems(dto.getItems()))
+                    .totalPrice(new Money(dto.getPrice()))
                     .build();
     }
 
@@ -45,19 +46,25 @@ public class OrderDomainMapper {
         );
     }
 
-    public Restaurant toRestaurant(CreateOrderCommand command) {
-        final var products = command.getItems().stream()
-                                    .map(item -> new Product(new ProductId(item.getProductId())))
-                                    .toList();
+    public Restaurant toRestaurant(CreateOrderDto dto) {
+        final var products = dto.getItems().stream()
+                                .map(item -> Product.builder()
+                                                    .id(new ProductId(item.getProductId()))
+                                                    .price(new Money(item.getPrice()))
+                                                    .build())
+                                .toList();
         return Restaurant.builder()
-                         .id(new RestaurantId(command.getRestaurantId()))
+                         .id(new RestaurantId(dto.getRestaurantId()))
                          .products(products)
                          .build();
     }
 
-    private List<OrderItem> toOrderItems(@NotNull(message = "items must be not null") List<com.food.ordering.system.service.domain.dto.OrderItem> items) {
+    private List<OrderItem> toOrderItems(@NotNull(message = "items must be not null") List<OrderItemDto> items) {
         return items.stream().map(item -> OrderItem.builder()
-                                                   .product(new Product(new ProductId(item.getProductId())))
+                                                   .product(Product.builder()
+                                                                   .id(new ProductId(item.getProductId()))
+                                                                   .price(new Money(item.getPrice()))
+                                                                   .build())
                                                    .price(new Money(item.getPrice()))
                                                    .quantity(item.getQuantity())
                                                    .subTotal(new Money(item.getSubTotal()))

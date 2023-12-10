@@ -1,6 +1,6 @@
 package com.food.ordering.system.service.domain.handler;
 
-import com.food.ordering.system.service.domain.dto.create.CreateOrderCommand;
+import com.food.ordering.system.service.domain.dto.create.CreateOrderDto;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.service.domain.helper.CreateOrderHelper;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ public class CreateOrderCommandHandler {
     private final CreateOrderHelper createOrderHelper;
 
     @Transactional
-    public CreateOrderResponse handle(CreateOrderCommand command) {
-        final var event = createOrderHelper.persistOrder(command);
+    public CreateOrderResponse handle(CreateOrderDto command) {
+        final var event = createOrderHelper.saveOrder(command);
         log.info("Created order with id: {}", event.getOrder().getId());
         return createOrderHelper.prepareResponse(event.getOrder());
     }
