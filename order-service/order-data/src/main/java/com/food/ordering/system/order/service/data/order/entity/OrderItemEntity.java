@@ -11,14 +11,17 @@ import java.util.UUID;
 @IdClass(OrderItemEntityId.class)
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class OrderItemEntity {
 
     @Id
+    @EqualsAndHashCode.Include
     private Integer id;
     @Id
+    @EqualsAndHashCode.Include
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private OrderEntity order;

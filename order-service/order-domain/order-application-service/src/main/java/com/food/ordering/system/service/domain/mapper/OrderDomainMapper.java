@@ -35,6 +35,7 @@ public class OrderDomainMapper {
         return CreateOrderResponse.builder()
                                   .trackingId(order.getTrackingId().getValue())
                                   .status(order.getStatus().name())
+                                  .message("Order was created successfully")
                                   .build();
     }
 

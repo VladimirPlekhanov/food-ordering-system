@@ -8,7 +8,7 @@ public record Money(BigDecimal amount) implements Comparable<Money> {
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 
     public Money(BigDecimal amount) {
-        this.amount = amount;
+        this.amount = setScale(amount);
     }
 
     public BigDecimal getAmount() {
@@ -28,11 +28,11 @@ public record Money(BigDecimal amount) implements Comparable<Money> {
     }
 
     public Money subtract(Money money) {
-        return new Money(setScale(this.amount.subtract(money.amount)));
+        return new Money(this.amount.subtract(money.amount));
     }
 
     public Money multiply(int multiplier) {
-        return new Money(setScale(this.amount.multiply(new BigDecimal(multiplier))));
+        return new Money(this.amount.multiply(new BigDecimal(multiplier)));
     }
 
     private BigDecimal setScale(BigDecimal input) {

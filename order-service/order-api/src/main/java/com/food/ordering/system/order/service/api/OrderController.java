@@ -23,8 +23,8 @@ public class OrderController {
         return orderApplicationService.createOrder(command);
     }
 
-    @GetMapping("/{orderId}")
-    public TrackOrderResponse trackOrder(@PathVariable UUID orderId) {
-        return orderApplicationService.trackOrder(new TrackOrderQuery(orderId));
+    @GetMapping("/{trackingId}")
+    public TrackOrderResponse trackOrder(@PathVariable UUID trackingId) {
+        return orderApplicationService.trackOrder(new TrackOrderQuery(trackingId));
     }
 }

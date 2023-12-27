@@ -12,12 +12,14 @@ import java.util.UUID;
 @Table(name = "orders")
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class OrderEntity {
 
     @Id
+    @EqualsAndHashCode.Include
     private UUID id;
     private UUID restaurantId;
     private String street;

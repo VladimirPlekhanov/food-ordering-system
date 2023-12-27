@@ -14,14 +14,17 @@ import java.util.UUID;
 @IdClass(RestaurantEntityId.class)
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class RestaurantEntity {
 
     @Id
+    @EqualsAndHashCode.Include
     private UUID restaurantId;
     @Id
+    @EqualsAndHashCode.Include
     private UUID productId;
     private Boolean restaurantActive;
     private String productName;

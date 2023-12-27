@@ -2,7 +2,7 @@ server:
   port: 8181
 spring:
   datasource:
-    url: jdbc:postgresql://0.0.0.0:5432/postgres?stringtype=unspecified
+    url: jdbc:postgresql://localhost:5432/postgres?stringtype=unspecified
     driver-class-name: org.postgresql.Driver
     username: admin
     password: admin

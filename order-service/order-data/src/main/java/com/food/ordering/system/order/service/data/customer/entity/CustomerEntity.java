@@ -11,11 +11,14 @@ import java.util.UUID;
 @Table(name = "customers")
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CustomerEntity {
+
     @Id
+    @EqualsAndHashCode.Include
     private UUID id;
     private String firstname;
     private String lastname;
