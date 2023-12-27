@@ -19,6 +19,10 @@ public class Product extends AggregateRoot<ProductId> {
         price = builder.price;
     }
 
+    public Product(ProductId id, Money price) {
+        this.id = id;
+        this.price = price;
+    }
     public static Builder builder() {
         return new Builder();
     }

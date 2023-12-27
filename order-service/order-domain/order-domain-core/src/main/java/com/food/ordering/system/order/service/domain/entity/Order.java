@@ -6,10 +6,9 @@ import com.food.ordering.system.order.service.domain.exception.OrderDomainExcept
 import com.food.ordering.system.order.service.domain.value.OrderItemId;
 import com.food.ordering.system.order.service.domain.value.StreetAddress;
 import com.food.ordering.system.order.service.domain.value.TrackingId;
+import org.apache.logging.log4j.util.Strings;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,11 +28,13 @@ public class Order extends AggregateRoot<OrderId> {
         restaurantId = builder.restaurantId;
         deliveryAddress = builder.deliveryAddress;
         totalPrice = builder.totalPrice;
-        items = builder.items;
+        items = Optional.ofNullable(builder.items).orElse(List.of());
         customerId = builder.customerId;
         trackingId = builder.trackingId;
         status = builder.status;
-        failureMessages = builder.failureMessages;
+        failureMessages = Optional.ofNullable(builder.failureMessages)
+                                  .map(m -> m.stream().filter(Strings::isNotBlank).toList())
+                                  .orElse(Collections.emptyList());
     }
 
     public static Builder builder() {
@@ -154,7 +155,7 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     public List<OrderItem> getItems() {
-        return items;
+        return List.copyOf(items);
     }
 
     public CustomerId getCustomerId() {
@@ -208,7 +209,7 @@ public class Order extends AggregateRoot<OrderId> {
         }
 
         public Builder items(List<OrderItem> val) {
-            items = val;
+            items = Objects.nonNull(val) ? List.copyOf(val) : Collections.emptyList();
             return this;
         }
 

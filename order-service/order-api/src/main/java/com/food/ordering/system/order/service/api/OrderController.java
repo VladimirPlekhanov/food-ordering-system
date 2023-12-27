@@ -1,6 +1,6 @@
 package com.food.ordering.system.order.service.api;
 
-import com.food.ordering.system.service.domain.dto.create.CreateOrderCommand;
+import com.food.ordering.system.service.domain.dto.create.CreateOrderDto;
 import com.food.ordering.system.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderQuery;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderResponse;
@@ -19,12 +19,12 @@ public class OrderController {
     private final OrderApplicationService orderApplicationService;
 
     @PostMapping
-    public CreateOrderResponse createOrderResponse(@RequestBody CreateOrderCommand command) {
+    public CreateOrderResponse createOrderResponse(@RequestBody CreateOrderDto command) {
         return orderApplicationService.createOrder(command);
     }
 
-    @GetMapping("/{orderId}")
-    public TrackOrderResponse trackOrder(@PathVariable UUID orderId) {
-        return orderApplicationService.trackOrder(new TrackOrderQuery(orderId));
+    @GetMapping("/{trackingId}")
+    public TrackOrderResponse trackOrder(@PathVariable UUID trackingId) {
+        return orderApplicationService.trackOrder(new TrackOrderQuery(trackingId));
     }
 }

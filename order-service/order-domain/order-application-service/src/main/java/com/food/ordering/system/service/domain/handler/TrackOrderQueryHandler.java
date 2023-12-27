@@ -4,7 +4,7 @@ import com.food.ordering.system.order.service.domain.exception.OrderNotFoundExce
 import com.food.ordering.system.order.service.domain.value.TrackingId;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderQuery;
 import com.food.ordering.system.service.domain.dto.track.TrackOrderResponse;
-import com.food.ordering.system.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.service.domain.mapper.OrderDomainMapper;
 import com.food.ordering.system.service.domain.port.output.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TrackOrderQueryHandler {
 
-    private final OrderDataMapper orderDataMapper;
+    private final OrderDomainMapper orderDomainMapper;
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     public TrackOrderResponse handle(TrackOrderQuery query) {
         return orderRepository.findByTrackingId(new TrackingId(query.getTrackingId()))
-                              .map(orderDataMapper::toTrackOrderResponse)
+                              .map(orderDomainMapper::toTrackOrderResponse)
                               .orElseThrow(() -> {
                                   log.warn("Could not find order with tracking id: {}", query.getTrackingId());
                                   return new OrderNotFoundException("order not found by tracking id");
